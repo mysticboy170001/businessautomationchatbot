@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Automation Biz Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bubble { max-width: 80%; padding:.75rem 1rem; border-radius: 1rem; }
+    .user { background:#2563eb; color:white; border-bottom-right-radius:.25rem; }
+    .bot  { background:#f3f4f6; color:#111827; border-bottom-left-radius:.25rem; }
+  </style>
+  <script> window.BACKEND_URL = "http://127.0.0.1:8000"; </script>
+</head>
+<body class="bg-white text-gray-900">
+  <div class="min-h-screen flex flex-col">
+    <header class="border-b sticky top-0 bg-white/90 backdrop-blur z-10">
+      <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+        <h1 class="text-xl font-bold">🤖 Automation Business Chatbot</h1>
+      </div>
+    </header>
+
+    <main class="flex-1">
+      <div id="chat" class="max-w-3xl mx-auto px-4 py-6 space-y-4"></div>
+    </main>
+
+    <footer class="border-t bg-white">
+      <div class="max-w-3xl mx-auto px-4 py-3">
+        <form id="composer" class="flex gap-2" autocomplete="off">
+          <input id="message" class="flex-1 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ask about services, pricing, hours, contact…" />
+          <button class="bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700">Send</button>
+        </form>
+        <div class="mt-2 text-xs text-gray-500">Example: What are your working hours?</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const composer = document.getElementById('composer');
+    const input = document.getElementById('message');
+
+    function bubble(role, text) {
+      const row = document.createElement('div');
+      row.className = 'flex ' + (role === 'user' ? 'justify-end' : 'justify-start');
+      const b = document.createElement('div');
+      b.className = 'bubble ' + (role === 'user' ? 'user' : 'bot');
+      b.innerText = text;
+      row.appendChild(b);
+      chat.appendChild(row);
+      chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' });
+    }
+
+    function greet() {
+      bubble('bot', "Hi! I'm your company assistant. Ask me about services, pricing, hours, or policies.");
+    }
+
+    composer.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const q = (input.value || '').trim();
+      if (!q) return;
+      bubble('user', q);
+      input.value = '';
+
+      try {
+        const res = await fetch(`${window.BACKEND_URL}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q })
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        bubble('bot', data.answer || 'No answer.');
+      } catch (err) {
+        console.error(err);
+        bubble('bot', 'Server not reachable. Is the backend running?');
+      }
+    });
+
+    greet();
+  </script>
+</body>
+</html>

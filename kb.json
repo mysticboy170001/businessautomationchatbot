@@ -1,0 +1,34 @@
+[
+  {
+    "keywords": [
+      "service",
+      "offer",
+      "product"
+    ],
+    "answer": "We offer AI automation, chatbot development, and web solutions."
+  },
+  {
+    "keywords": [
+      "price",
+      "cost",
+      "charge"
+    ],
+    "answer": "Pricing depends on the project. Contact us for a quote."
+  },
+  {
+    "keywords": [
+      "hour",
+      "time",
+      "open"
+    ],
+    "answer": "Our working hours are 9 AM to 6 PM, Sunday to Thursday."
+  },
+  {
+    "keywords": [
+      "contact",
+      "email",
+      "phone"
+    ],
+    "answer": "You can contact us at support@automationbiz.com or call +8801XXXXXXXXX."
+  }
+]
